@@ -56,27 +56,26 @@ s.mytaglist = awful.widget.taglist {
         spacing = 8,
         layout  = wibox.layout.fixed.horizontal
     },
-     widget_template = {
-            {
-                {
-                    {
-                        id = "text_role",
-                        widget = wibox.widget.textbox,
-                        font = beautiful.font_asian .. "bold 13",
-                        align = "center",
-                        markup = "DD",
-                        valign = "center",
-                    },
-                    margins = 8,
-                    widget = wibox.container.margin,
-                },
-                widget = wibox.container.background
-              },
-              id = "background_role",
-              bg = beautiful.accent,
-              widget = wibox.container.background,
-
-            },
+    widget_template = {
+     {
+       {
+          {
+            id = "text_role",
+            widget = wibox.widget.textbox,
+            font = beautiful.font_asian .. "bold 13",
+            align = "center",
+            markup = "DD",
+            valign = "center",
+          },
+          margins = 8,
+          widget = wibox.container.margin,
+       },
+       widget = wibox.container.background
+     },
+     id = "background_role",
+     bg = beautiful.accent,
+     widget = wibox.container.background,
+    },
     buttons = taglist_buttons
 }
 

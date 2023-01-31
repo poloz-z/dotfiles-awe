@@ -1,0 +1,28 @@
+# Alcritty colors
+# Amarena (one edit)  Colorscheme for Alacritty
+
+colors:
+  primary:
+    background: '#1a2026'
+    foreground: '#bfc9db'
+  cursor:
+    text:   CellForeground
+    cursor: '#bfc9db'
+  bright:
+    black:   '#242d35'
+    red:     '#fb6396'
+    green:   '#6ccb6e'
+    yellow:  '#ffecb3'
+    blue:    '#6ec1d6'
+    magenta: '#fb6396'
+    cyan:    '#7fe4d2'
+    white:   '#ffffff'
+  normal:
+    black:   '#242d35'
+    red:     '#fb6396'
+    green:   '#6ccb6e'
+    yellow:  '#ffecb3'
+    blue:    '#6ec1d6'
+    magenta: '#fb6396'
+    cyan:    '#7fe4d2'
+    white:   '#ffffff'

@@ -3,7 +3,7 @@ wibox = require("wibox")
 beautiful = require("beautiful")
 local xresources = require("beautiful.xresources")
 local awful = require("awful")
-local ayudas = ("ayudas")
+
 -- Test a context new popup widgets
 
 function run(cmd)

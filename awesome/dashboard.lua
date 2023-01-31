@@ -70,7 +70,7 @@ local profile = wibox.widget {
       hostname,
       layout = wibox.layout.align.horizontal,
     },
-    halign = "left",
+    halign = "center",
     valign = "top",
     widget = wibox.container.place
   },

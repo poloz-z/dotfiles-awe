@@ -11,8 +11,6 @@ local wibox = require("wibox")  -- Por implementar
 
 require("awful.hotkeys_popup.keys")
 
-require("ayudas")
-
 local home = os.getenv("HOME")
 
 -- Tema

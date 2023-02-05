@@ -152,7 +152,7 @@ s.mywibar = awful.wibar({
     position = "bottom",
     screen = s,
     type = "dock",
-    ontop = true,
+    ontop = false,
     bg = "#1a2026",
     fg = beautiful.bar_fg,
     visible = true,
@@ -277,23 +277,3 @@ s.mywibar = awful.wibar({
     layout = wibox.layout.fixed.horizontal,
   },
 })end)
-
-local function remove_bar(c)
-  if c.fullscreen or c.maximized then
-    c.screen.mywibar.visible = false 
-  else 
-    c.screen.mywibar.visible = true
-  end
-end
-
-local function add_bar(c)
-  if c.fullscreen or c.maximized then 
-    c.screen.mywibar.visible = true 
-  else 
-    c.screen.mywibar.visible = true
-  end
-end
-
-client.connect_signal("property::fullscreen", remove_bar)
-client.connect_signal("request::unmanage", add_bar)
-

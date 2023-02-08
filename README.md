@@ -17,7 +17,7 @@ Programas (Se encuentra en la mayoria de repositorios ;D
   
   ´´´
   git clone https://github.com/poloz-z/dotfiles-awe
-  ´´
+  ´´´
   
   Y copiar el contenido de la carpeta en $HOME/.config 
   

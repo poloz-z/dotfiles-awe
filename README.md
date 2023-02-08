@@ -15,12 +15,12 @@ Programas (Se encuentra en la mayoria de repositorios ;D
   
   ## Instalar:
   
-  ´´´
+  '''
   git clone https://github.com/poloz-z/dotfiles-awe
-  ´´´
+  '''
   
   Y copiar el contenido de la carpeta en $HOME/.config 
   
   Firma pongcham~
   
-  ![] (https://raw.githubusercontent.com/poloz-z/dotfiles-awe/main/cap.png)
+  ![screnshot] (cap.png)

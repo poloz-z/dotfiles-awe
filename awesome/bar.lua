@@ -38,7 +38,7 @@ local hour = wibox.widget(
     right = 5,
     left = 5,
     align = "center",
-    valign = "center",
+    halign = "center",
     widget = wibox.widget.textclock
   }
 )
@@ -74,50 +74,77 @@ local time_icon = wibox.widget({
   widget = wibox.container.background,
 })
 
-local playerctl = wibox.widget ({
-  awful.widget.watch("bash -c $HOME/second.lua", 1),
+local song_icon = wibox.widget({
+  {
+    {
+      image = beautiful.music,
+      resize = true,
+      widget = wibox.widget.imagebox,
+    },
+    margins = 1,
+    widget = wibox.container.margin,
+  },
+  bg = beautiful.music_bg,
+  shape = gears.shape.circle,
+  widget = wibox.container.background,
+})
+
+local song_txt = wibox.widget ({
+  markup = "No song :(",
+  widget = wibox.widget.textbox,
+  font = beautiful.font_name .. " bold 12",
+  halign = "center"
+})
+
+awful.widget.watch("bash -c $HOME/.config/awesome/scripts/playerctl.sh", 2, function(_,salida)
+  song_txt.markup = salida
+end)
+
+local song = wibox.widget ({
+  song_icon,
+  song_txt,
   layout = wibox.layout.align.horizontal
 })
 
 
 -- Create taglist buttons
 local taglist_buttons = gears.table.join(
-        awful.button({ }, 1, function(t) t:view_only() end),
-        awful.button({ modkey }, 1, function(t)
-          if client.focus then
-            client.focus:move_to_tag(t)
-          end
-        end),
-        awful.button({ }, 3, awful.tag.viewtoggle),
-        awful.button({ modkey }, 3, function(t)
-          if client.focus then
-            client.focus:toggle_tag(t)
-          end
-        end),
-        awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-        awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end))
+  awful.button({ }, 1, function(t) t:view_only() end),
+  awful.button({ modkey }, 1, function(t)
+    if client.focus then
+      client.focus:move_to_tag(t)
+    end
+  end),
+  awful.button({ }, 3, awful.tag.viewtoggle),
+  awful.button({ modkey }, 3, function(t)
+    if client.focus then
+      client.focus:toggle_tag(t)
+    end
+  end),
+  awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+  awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) 
+end))
 
 local tasklist_buttons = gears.table.join(
-                     awful.button({ }, 1, function (c)
-                                              if c == client.focus then
-                                                  c.minimized = true
-                                              else
-                                                  c:emit_signal(
-                                                      "request::activate",
-                                                      "tasklist",
-                                                      {raise = true}
-                                                  )
-                                              end
-                                          end),
-                     awful.button({ }, 3, function()
-                                              awful.menu.client_list({ theme = { width = 250 } })
-                                          end),
-                     awful.button({ }, 4, function ()
-                                              awful.client.focus.byidx(1)
-                                          end),
-                     awful.button({ }, 5, function ()
-                                              awful.client.focus.byidx(-1)
-                                          end))
+  awful.button({ }, 1, function (c)
+    if c == client.focus then
+      c.minimized = true
+    else
+      c:emit_signal(
+        "request::activate",
+        "tasklist",
+        {raise = true})
+    end
+  end),
+  awful.button({ }, 3, function()
+     awful.menu.client_list({ theme = { width = 400 } })
+  end),
+  awful.button({ }, 4, function ()
+    awful.client.focus.byidx(1)
+  end),
+  awful.button({ }, 5, function ()
+    awful.client.focus.byidx(-1)
+  end))
 
 
 awful.screen.connect_for_each_screen(function(s)
@@ -216,7 +243,7 @@ s.mywibar = awful.wibar({
             s.mytasklist,
             layout = wibox.layout.align.vertical,
           },
-          margins = 7,
+          margins = 5,
           widget  = wibox.container.margin,
         },
         shape  = gears.shape.rounded_rect,
@@ -226,15 +253,30 @@ s.mywibar = awful.wibar({
       margins = 4,
       widget  = wibox.container.margin
     },
-    {
-      awful.widget.watch('bash -c "uname -a"',15),
-      layout = wibox.layout.align.vertical,
-    },
-    halign = "center",
+    halign = "left",
     layout = wibox.container.place,
   },
 
   {  -- Right
+
+    {
+      {
+        {
+          {
+            song,
+            layout = wibox.layout.align.horizontal
+          },
+          margins = 3,
+          widget = wibox.container.margin
+        },
+        bg = beautiful.bar_bg,
+        shape = gears.shape.rounded_rect,
+        forced_width = 250,
+        widget = wibox.container.background
+      },
+      margins = 4,
+      widget = wibox.container.margin
+    },
 
     { -- Rigth 1 
       {

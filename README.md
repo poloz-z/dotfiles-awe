@@ -14,12 +14,13 @@ Programas (Se encuentra en la mayoria de repositorios ;D
   * Noto Sans CJK
   
   ## Instalar:
-  '''
+  
+  ´´´
   git clone https://github.com/poloz-z/dotfiles-awe
-  '''
+  ´´
   
   Y copiar el contenido de la carpeta en $HOME/.config 
   
   Firma pongcham~
   
-  ![screenshot] (https://raw.githubusercontent.com/poloz-z/dotfiles-awe/main/cap.png)
+  ![] (https://raw.githubusercontent.com/poloz-z/dotfiles-awe/main/cap.png)

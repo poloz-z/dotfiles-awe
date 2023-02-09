@@ -8,6 +8,8 @@ Programas (Se encuentra en la mayoria de repositorios ;D
  * Alacritty (Terminal.)
  * Rofi (Lanzador.)
  * Awesome (Administrador de ventana.)
+ * Picom (Compositor.)
+ * Playerctl (Music Status.)
  
 Fuentes
  * Monofur Nerd Font

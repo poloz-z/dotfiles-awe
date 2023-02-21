@@ -5,15 +5,11 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 
-local awesome_logo = wibox.widget({
-  {
+local power_logo = wibox.widget({
     widget = wibox.widget.imagebox,
-    image = beautiful.cactus,
+    image = beautiful.poweroff,
     resize = true
-  },
-  margins = 3,
-  widget = wibox.container.margin,
-})
+  })
 
 local app = {
   navegador = "firefox", 
@@ -31,6 +27,14 @@ local launcher_menu = awful.menu({items = {
 
 local launcher = awful.widget.launcher({image=beautiful.awesome_icon, menu=launcher_menu})
 
+local launcher_power = awful.menu({items = {
+    {"Apagar", "loginctl poweroff"},
+    {"Reiniciar", "loginctl reboot"},
+    {"Cerrar Sección", awesome.quit}
+}})
+
+local power_menu = awful.widget.launcher({image=beautiful.poweroff, menu=launcher_power})
+
 local hour = wibox.widget(
   {
     font = beautiful.font_name .. " bold 15",
@@ -40,8 +44,11 @@ local hour = wibox.widget(
     align = "center",
     halign = "center",
     widget = wibox.widget.textclock
-  }
-)
+  })
+
+local calendar = awful.widget.calendar_popup.month()
+
+calendar:attach(hour,"br")
 
 local function medier()
   if os.date("%H") >= "06" and os.date("%H") <= "18" then
@@ -90,15 +97,25 @@ local song_icon = wibox.widget({
 })
 
 local song_txt = wibox.widget ({
-  markup = "No song :(",
+  text = "No song :(",
   widget = wibox.widget.textbox,
   font = beautiful.font_name .. " bold 12",
   halign = "center"
 })
 
-awful.widget.watch("bash -c $HOME/.config/awesome/scripts/playerctl.sh", 2, function(_,salida)
-  song_txt.markup = salida
-end)
+--awful.widget.watch("bash -c $HOME/.config/awesome/scripts/playerctl.sh", 2, function(_,salida)
+--  song_txt.markup = salida
+--end)
+
+gears.timer {timeout = 2, call_now = true, autostart = true,
+  callback = function()
+    awful.spawn.easy_async(
+    {"bash", "-c", "$HOME/.config/awesome/scripts/playerctl.sh"},
+    function(salida)
+      song_txt.text = salida
+    end)
+  end
+}
 
 local song = wibox.widget ({
   song_icon,
@@ -150,30 +167,32 @@ local tasklist_buttons = gears.table.join(
 awful.screen.connect_for_each_screen(function(s)
 
     -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc(1)end),
-                           awful.button({ }, 3, function () awful.layout.inc(-1)end),
-                           awful.button({ }, 4, function () awful.layout.inc(1)end),
-                           awful.button({ }, 5, function () awful.layout.inc(-1)end)))
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist {
-        screen  = s,
-        filter  = awful.widget.taglist.filter.all,
-        buttons = taglist_buttons,
-        style   = {
-          shape = gears.shape.circle,
-        }
-      }
+s.mylayoutbox = awful.widget.layoutbox(s)
+s.mylayoutbox:buttons(gears.table.join(
+  awful.button({ }, 1, function () awful.layout.inc(1)end),
+  awful.button({ }, 3, function () awful.layout.inc(-1)end),
+  awful.button({ }, 4, function () awful.layout.inc(1)end),
+  awful.button({ }, 5, function () awful.layout.inc(-1)
+end)))
 
-    s.mytasklist = awful.widget.tasklist {
-      screen  = s,
-      filter  = awful.widget.tasklist.filter.currenttags,
-      buttons = tasklist_buttons,
-      style = {
-        gears.shape.circle,
-      },
-    }
+-- Create a taglist widget
+s.mytaglist = awful.widget.taglist {
+  screen  = s,
+  filter  = awful.widget.taglist.filter.all,
+  buttons = taglist_buttons,
+  style   = {
+    shape = gears.shape.circle,
+  },
+}
+
+s.mytasklist = awful.widget.tasklist {
+  screen  = s,
+  filter  = awful.widget.tasklist.filter.currenttags,
+  buttons = tasklist_buttons,
+  style = {
+    gears.shape.circle,
+  },
+}
 
 s.mywibar = awful.wibar({
     position = "bottom",
@@ -184,7 +203,7 @@ s.mywibar = awful.wibar({
     fg = beautiful.bar_fg,
     visible = true,
     height = 43,
-    --width = 1275,
+    --width = 1230,
   })
 
   s.mywibar:setup ({
@@ -192,7 +211,7 @@ s.mywibar = awful.wibar({
   {  -- Left
     { -- Left 1 
       {
-        {
+        --{
           {
             --awesome_logo,
             launcher,
@@ -200,10 +219,10 @@ s.mywibar = awful.wibar({
           },
           margins = 6,
           widget = wibox.container.margin,
-        },
-        bg = beautiful.bar_bg,
-        shape = gears.shape.rounded_rect,
-        widget = wibox.container.background,
+        --},
+        --bg = "#63c1d6",
+        --shape = gears.shape.rounded_rect,
+        --widget = wibox.container.background,
       },
       left = 5,
       right = 5,
@@ -224,12 +243,15 @@ s.mywibar = awful.wibar({
           --rigth = 1,
           --widget = wibox.container.margin,
         },
-        shape = gears.shape.rounded_rect,
+        shape = gears.shape.rounded_bar,
         bg = beautiful.bar_bg,
         fg = beautiful.bar_fg,
         widget = wibox.container.background,
       },
-      margins = 5,
+      top = 4,
+      bottom = 4,
+      left = 5,
+      right = 5,
       widget = wibox.container.margin,
     },
     layout = wibox.layout.fixed.horizontal,
@@ -263,15 +285,22 @@ s.mywibar = awful.wibar({
       {
         {
           {
-            song,
-            layout = wibox.layout.align.horizontal
+            {
+              song,
+              layout = wibox.layout.align.horizontal
+            },
+            margins = 3,
+            widget = wibox.container.margin
           },
-          margins = 3,
-          widget = wibox.container.margin
+          --bg = beautiful.bar_bg,
+          --shape = gears.shape.rounded_bar,
+          --fg = "#ff0000",
+          width = 250,
+          strategy = "max",
+          widget = wibox.container.constraint
         },
         bg = beautiful.bar_bg,
-        shape = gears.shape.rounded_rect,
-        forced_width = 250,
+        shape = gears.shape.rounded_bar,
         widget = wibox.container.background
       },
       margins = 4,
@@ -310,11 +339,27 @@ s.mywibar = awful.wibar({
           layout = wibox.layout.align.horizontal,
         },
         bg = beautiful.bar_bg,
-        shape = gears.shape.rounded_rect,
+        shape = gears.shape.rounded_bar,
         widget = wibox.container.background,
       },
-      margins = 4,
+      top = 4,
+      bottom = 4,
+      left = 4,
+      right = 10,
       widget = wibox.container.margin,
+    },
+    {
+      {
+        {
+          power_menu,
+          layout = wibox.layout.align.horizontal
+        },
+        bg = beautiful.fg_urgent,
+        shape = gears.shape.circle,
+        widget = wibox.container.background
+      },
+      margins = 5,
+      widget = wibox.container.margin
     },
     layout = wibox.layout.fixed.horizontal,
   },

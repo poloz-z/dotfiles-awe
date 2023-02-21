@@ -13,6 +13,13 @@ function run(cmd)
   return output
 end
 
+semi_rect = function(radius)
+  return function(cr,width,height)
+    gears.shape.rounded_rect(cr,width,height,radius)
+  end
+end 
+
+
 local hostname = wibox.widget {
   {
     {
@@ -25,7 +32,7 @@ local hostname = wibox.widget {
       margins = 6,
       widget = wibox.container.margin
     },
-    bg = beautiful.border_focus,
+    bg = beautiful.bg_normal,
     shape = gears.shape.rounded_bar,
     forced_height = 38,
     widget = wibox.container.background
@@ -41,10 +48,10 @@ local pfp = wibox.widget {
       {
         {
           image = beautiful.pfp,
-          forced_height = 200,
-          forced_width = 200,
-          clip_shape = gears.shape.circle,  --gears.shape.rounded_rect,
-          resize = true,
+          clip_shape = semi_rect(100),
+          forced_width = 180,
+          forced_height = 180,
+          resize = false,
           widget = wibox.widget.imagebox
         },
         widget = wibox.container.place
@@ -52,14 +59,14 @@ local pfp = wibox.widget {
       margins = 1,
       widget = wibox.container.margin,
     },
-    shape = gears.shape.rounded_rect,
-    forced_height = 180,
-    forced_width = 180,
-    --border_width = 2,
-    --bg = beautiful.border_focus,
+    shape = semi_rect(100),
+    forced_height = 182,
+    forced_width = 182,
+    border_width = 2,
+    bg = beautiful.bg_normal,
     widget = wibox.container.background
   },
-  margins = 6,
+  margins = 4,
   widget = wibox.container.margin
 }
 
@@ -78,41 +85,20 @@ local profile = wibox.widget {
 }
 
 local barra = wibox.widget {
-  {
-    max_value     = 60,
-    value         = 50,
-    forced_height = 20,
-    forced_width  = 100,
-    shape         = gears.shape.rounded_bar,
-    border_width  = 2,
-    border_color  = beautiful.border_color,
-    widget        = wibox.widget.progressbar,
-    id = "barra_con"
-  },
-  margins = 10,
-  widget = wibox.container.margin
+  value         = 43,
+  max_value     = 60,
+  forced_height = 20,
+  forced_width  = 100,
+  shape         = semi_rect(30),
+  border_width  = 2,
+  border_color  = beautiful.border_color,
+  widget        = wibox.widget.progressbar,
 }
 
-awesome.connect_signal(20,function (value)
-  barra.value = (100 - value)
-end)
-
-
-local test_txt = wibox.widget {
-  markup = "<span foreground='#ff0000' >Welcome!!</span>",
-  --text = run("rxfetch"),
-  font = beautiful.font_name .. " bold 20",
-  widget = wibox.widget.textbox,
-  valign = "bottom",
-  halign = "left",
-}
-
-local h_text = wibox.widget {
-  markup = "<span foreground='#cecacd'>Time: </span>",
-  font = beautiful.font_name .. " 15",
-  widget = wibox.widget.textbox
-}
-
+--awful.widget.watch("bash -c 'date +%S'", 0.5, function(_,salida)
+--  barra.value = tonumber(salida)
+--end)
+--
 local hour = wibox.widget(
   {
     font = beautiful.font_name .. " bold 26",
@@ -169,8 +155,8 @@ local hm = wibox.widget {
             hour, min,
             layout = wibox.layout.align.horizontal
           },
-          bg = beautiful.border_focus,
-          shape = gears.shape.rounded_bar,
+          bg = beautiful.bg_normal,
+          shape = semi_rect(25),
           widget = wibox.container.background
         },
         left = 6,
@@ -180,7 +166,7 @@ local hm = wibox.widget {
       time_icon,
       layout = wibox.layout.align.horizontal
     },
-    margins = 5,
+    margins = 10,
     widget = wibox.container.margin
   },
   valign = "top",
@@ -190,27 +176,137 @@ local hm = wibox.widget {
 
 local fc = wibox.widget(
   {
-    fg = "#58d6bf",
-    font = beautiful.font_name .. " 18",
-    format = "%A, %d %B",
+    font = beautiful.font_name .. " bold 20",
+    format = "%A, %d %B %Y",
     widget = wibox.widget.textclock
   })
 
-  local fecha = wibox.widget {
+local fecha = wibox.widget({
   {
     {
       {
         {
+          fc,
+          layout = wibox.layout.align.horizontal
+        },
+        margins = 8,
+        widget = wibox.container.margin
+      },
+      shape = semi_rect(25),
+      bg  = beautiful.bg_normal,
+      widget = wibox.container.background
+    },
+    top = 25,
+    --margins = 10,
+    widget = wibox.container.margin
+  },
+  halign = "center",
+  widget = wibox.container.place
+})
+
+local song_icon = ({
+  {
+    {
+      image = beautiful.musica,
+      resize = true,
+      widget = wibox.widget.imagebox
+    },
+    halign = "center",
+    widget = wibox.container.place
+  },
+  margins = 10,
+  widget = wibox.container.margin
+})
+
+local song_artist = wibox.widget({
+  markup = "ARTIST",
+  font = beautiful.font_name .. " 17",
+  widget = wibox.widget.textbox
+})
+
+awful.widget.watch("bash -c 'playerctl metadata artist'", 2, function(_,salida)
+  output = salida
+  song_artist.markup = "<span foreground='#c269bc'>"..output.."</span>"
+end)
+
+local songtitle = wibox.widget({
+  markup = "TITLE",
+  font = beautiful.font_name .. " bold 18",
+  widget = wibox.widget.textbox
+})
+
+awful.widget.watch("bash -c 'playerctl metadata title'", 2, function(_,salida)
+  output = salida
+  songtitle.markup = "<span foreground='#58d6bf'>"..output.."</span>"
+end)
+
+local sonando = wibox.widget ({
+  {
+    {
+      song_artist,
+      songtitle,
+      layout = wibox.layout.align.vertical
+    },
+    forced_width = 140,
+    forced_height = 150,
+    widget = wibox.container.background
+  },
+  halign = "left",
+  widget = wibox.container.place
+})
+
+local playing = wibox.widget ({
+  {
+    {
+      {
+        {
+          sonando,
+          song_icon,
+          layout = wibox.layout.align.horizontal
+        },
+        margins = 5,
+        widget = wibox.container.margin
+      },
+      bg = beautiful.bg_normal,
+      shape = semi_rect(20),
+      forced_height = 150,
+      forced_width = 250,
+      widget = wibox.container.background
+    },
+    halign = "left",
+    widget = wibox.container.place
+  },
+  margins = 10,
+  widget = wibox.container.margin
+})
+
+
+local uptime = wibox.widget({
+  markup = "UPTIME",
+  font = beautiful.font_name .. " bold 18",
+  widget = wibox.widget.textbox
+})
+
+awful.widget.watch("bash -c 'uptime -p'",60,function(_,salida)
+  output = salida
+  uptime.markup = "<span foreground='#4cb9d6'>"..output.."</span>"
+end)
+
+local up = wibox.widget {
+  {
+    {
+      {
+        --{
           {
-            fc,
+            uptime,
             layout = wibox.layout.align.horizontal
           },
           margins = 6,
           widget = wibox.container.margin
-        },
-        bg = beautiful.border_focus,
-        shape = gears.shape.rounded_bar,
-        widget = wibox.container.background
+        --},
+        --bg = beautiful.bg_normal,
+        --shape = gears.shape.rounded_bar,
+        --widget = wibox.container.background
       },
       top = 25,
       left = 1,
@@ -226,7 +322,7 @@ local fc = wibox.widget(
 }
 
 local frase = wibox.widget {
-  markup = "<span foreground='#fb6396'>Last dance, one kiss, your touch, my fill... </span>",
+  markup = "<span foreground='#fb6396'>Esclavo de la cuca no quién la porta. ~Labrusvka</span>",
   font = beautiful.font_name .. " italic 17",
   widget = wibox.widget.textbox
 }
@@ -246,16 +342,118 @@ local imagine = wibox.widget {
     widget = wibox.container.margin
   },
   valign = "top",
-  halign = "center",
+  halign = "left",
   widget = wibox.container.place,
 }
 
 local info = wibox.widget {
   {
-    hm, fecha, imagine,
+    hm, up, imagine,
     layout = wibox.layout.align.vertical
   },
   margins = 3,
+  widget = wibox.container.margin
+}
+
+local volume = wibox.widget {
+  value         = 0.5,
+  max_value     = 1,
+  forced_height = 10,
+  forced_width  = 200,
+  shape         = semi_rect(30),
+  border_width  = 2,
+  color         = "#4cb9d6",
+  border_color  = "#4cb9d6",
+  background_color = "#00000000",
+  widget        = wibox.widget.progressbar,
+}
+
+awful.widget.watch("bash -c 'playerctl volume'", 1, function(_,salida)
+  volume.value = tonumber(salida)
+end)
+
+local ram = wibox.widget {
+  value         = 34,
+  max_value     = 100,
+  forced_height = 10,
+  forced_width  = 200,
+  shape         = semi_rect(30),
+  border_width  = 2,
+  border_color  = "#c269bc",
+  color         = "#c269bc",
+  background_color = "#0000000",
+  widget        = wibox.widget.progressbar,
+}
+
+--awful.widget.watch("bash -c 'free -m | awk 'NR == 2 {print $3}' '", 1, function(_,salida)
+--  ram.value = tonumber(salida)
+--end)
+
+local procesador = wibox.widget {
+  value         = 24,
+  max_value     = 100,
+  forced_height = 10,
+  forced_width  = 100,
+  shape         = semi_rect(30),
+  border_width  = 2,
+  border_color  = "#f92d72",
+  color         = "#f92d72",
+  background_color = "#00000000",
+  widget        = wibox.widget.progressbar,
+}
+
+--awful.widget.watch("bash -c ''", 1, function(_,salida)
+--  procesador.value = tonumber(salida)
+--end)
+
+local bars1 = wibox.widget {
+  {
+    volume,
+    layout = wibox.layout.align.vertical
+  },
+  top = 15,
+  bottom = 10,
+  right = 40,
+  widget = wibox.container.margin
+}
+
+local bars2 = wibox.widget {
+  {
+    ram,
+    layout = wibox.layout.align.vertical
+  },
+  top = 15,
+  bottom = 10,
+  right = 40,
+  widget = wibox.container.margin
+}
+
+local bars3 = wibox.widget {
+  {
+    procesador,
+    layout = wibox.layout.align.vertical
+  },
+  top = 15,
+  bottom = 10,
+  right = 40,
+  widget = wibox.container.margin
+}
+local barras = wibox.widget {
+  {
+    bars1, bars2, bars3,
+    layout = wibox.layout.align.vertical
+  },
+  valign = "center",
+  halign = "left",
+  widget = wibox.container.place 
+}
+
+local process = wibox.widget {
+  {
+    playing, barras,
+    layout = wibox.layout.align.horizontal
+  },
+  margins = 5,
   widget = wibox.container.margin
 }
 
@@ -263,12 +461,12 @@ awful.screen.connect_for_each_screen(function(s)
 
   main_box = wibox({
     type = "dock",
-    shape =  gears.shape.rounded_rect, --gears.shape.rounded_rect,
+    shape = semi_rect(30), --gears.shape.rounded_rect,
     screen = s,
-    width = 500, height = 270,  --655
-    bg = beautiful.bg_titlebar,
+    width = 510, height = 500,  --655
+    bg = beautiful.border_focus,
     ontop = false,
-    visible = false,
+    visible = true,
     x = 10, y = 10,
   })
 
@@ -276,19 +474,24 @@ awful.screen.connect_for_each_screen(function(s)
     {
       {
         {
-          profile,
-          info,
-          --barra,
-          expand = "none",
-          layout = wibox.layout.fixed.horizontal
+          --{
+            profile,
+            info,
+            expand = "none",
+            layout = wibox.layout.fixed.horizontal
+          --},
+          --bg = "#526170",
+          --shape = gears.shape.rounded_rect,    
+          --widget = wibox.container.background,
         },
-        bg = beautiful.dashboard_module,
-        shape = gears.shape.rounded_rect,    
-        widget = wibox.container.background,
+        fecha,
+        process,
+        layout = wibox.layout.fixed.vertical
       },
-      margins = 15,
+      margins = 5,
       widget = wibox.container.margin,
     },
     layout = wibox.layout.fixed.vertical,
   })
 end)
+

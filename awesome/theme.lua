@@ -10,7 +10,7 @@ local themes_path = home .. "/.config/awesome"
 local theme = {}
 
 -- Font
-theme.font = "Monofur Nerd Font bold 13"
+theme.font = "Monofur Nerd Font bold 14"
 theme.font_name = "Monofur Nerd Font"
 theme.font_asian = "Noto Sans Mono CJK JP"
 
@@ -24,7 +24,7 @@ theme.bg_normal = "#242d35"
 theme.fg_focus = "#ffffff"
 theme.fg_normal = "#ffffff"
 theme.fg_urgent = "#d7827e"
-theme.fg_minimize = "#ffffff"
+theme.fg_minimize = "#1a2026"
 
 theme.border_width = dpi(3)
 theme.border_focus = "#1a2026"
@@ -47,7 +47,8 @@ theme.tasklist_plain_task_name = true
 theme.tasklist_spacing = 5
 
 theme.taglist_fg_focus = "#f4f5f2"
-theme.taglist_fg_occupied = "#758392"
+theme.taglist_fg_occupied = "#97a5b4"
+theme.taglist_fg_empty = "#526170"
 theme.taglist_bg_focus = "#526170"
 --theme.taglist_bg_occupied = "#141b1e"
 theme.taglist_spacing = 7
@@ -59,7 +60,7 @@ theme.music_bg = "#f692b2"
 
 theme.dashboard_module = "#242d35"
 
-theme.wallpaper = themes_path .. "/wallpaper/1.jpg"
+theme.wallpaper = themes_path .. "/wallpaper/suwako.jpg"
 
 theme.titlebar_close_button_normal = themes_path .. "/icons/titlebar/inactive.png"
 theme.titlebar_close_button_focus = themes_path .. "/icons/titlebar/close.png"
@@ -80,6 +81,8 @@ theme.noche = themes_path .. "/icons/night.png"
 theme.dia = themes_path .. "/icons/day.png"
 theme.pfp = themes_path .. "/icons/pfp.jpg"
 theme.music = themes_path .. "/icons/music.png"
+theme.musica = themes_path .. "/icons/musica.png"
+theme.poweroff = themes_path .. "/icons/poweroff.png"
 
 theme.icon_theme = nil
 

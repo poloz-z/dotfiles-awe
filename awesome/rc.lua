@@ -36,14 +36,15 @@ awful.layout.layouts = {
     awful.layout.suit.max.fullscreen,
 }
 
-awful.tag({"一", "二", "三", "四","五",},s,awful.layout.layouts[1])
+--awful.tag({"一", "二", "三", "四","五",},s,awful.layout.layouts[1])
+awful.tag({"󰽢","󰽢","󰽢","󰽢"},s,awful.layout.layouts[1])
 
 require("bind")
 require("signal")
 require("rules")
-require("titlebar")
+require("titlebar") 
 require("bar")
-require("dashboard")  --"En desarrollo"
+--require("dashboard")  --"En desarrollo"
 --require("dock")  --"En desarrollo"
 
 awful.spawn.with_shell("pipewire &")

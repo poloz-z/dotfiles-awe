@@ -23,6 +23,6 @@ git clone https://github.com/poloz-z/dotfiles-awe
 
 Y copiar el contenido de la carpeta en $HOME/.config
 
-Firma pongcham~
+Firma pongcham~ test
 
 ![screnshot](cap.png)
